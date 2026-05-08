@@ -1,0 +1,52 @@
+apiVersion: krew.googlecontainertools.github.com/v1alpha2
+kind: Plugin
+metadata:
+  name: kdescribe
+spec:
+  version: v0.1.0
+  homepage: https://github.com/dato-dev/kdescribe
+  shortDescription: Highlight important kubectl describe findings
+  description: |
+    kdescribe reads kubectl describe output from stdin, highlights common
+    Kubernetes workload failure signals, ranks findings by risk, and suggests
+    the next checks to run.
+  caveats: |
+    kdescribe is a stdin highlighter. Pipe kubectl describe output into it:
+
+      kubectl describe pod <pod-name> | kubectl kdescribe
+  platforms:
+    - selector:
+        matchLabels:
+          os: darwin
+          arch: amd64
+      uri: https://github.com/dato-dev/kdescribe/releases/download/v0.1.0/kdescribe_darwin_amd64.tar.gz
+      sha256: TODO
+      bin: kubectl-kdescribe
+    - selector:
+        matchLabels:
+          os: darwin
+          arch: arm64
+      uri: https://github.com/dato-dev/kdescribe/releases/download/v0.1.0/kdescribe_darwin_arm64.tar.gz
+      sha256: TODO
+      bin: kubectl-kdescribe
+    - selector:
+        matchLabels:
+          os: linux
+          arch: amd64
+      uri: https://github.com/dato-dev/kdescribe/releases/download/v0.1.0/kdescribe_linux_amd64.tar.gz
+      sha256: TODO
+      bin: kubectl-kdescribe
+    - selector:
+        matchLabels:
+          os: linux
+          arch: arm64
+      uri: https://github.com/dato-dev/kdescribe/releases/download/v0.1.0/kdescribe_linux_arm64.tar.gz
+      sha256: TODO
+      bin: kubectl-kdescribe
+    - selector:
+        matchLabels:
+          os: windows
+          arch: amd64
+      uri: https://github.com/dato-dev/kdescribe/releases/download/v0.1.0/kdescribe_windows_amd64.tar.gz
+      sha256: TODO
+      bin: kubectl-kdescribe.exe

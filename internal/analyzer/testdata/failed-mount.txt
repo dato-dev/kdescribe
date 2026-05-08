@@ -1,0 +1,21 @@
+Name:             postgres-0
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             worker-2/10.0.0.11
+Labels:           app=postgres
+Status:           Pending
+Containers:
+  postgres:
+    Image:      postgres:16
+    State:      Waiting
+      Reason:   ContainerCreating
+    Ready:      False
+    Restart Count:  0
+Volumes:
+  data:
+    Type:       PersistentVolumeClaim
+    ClaimName:  postgres-data
+Events:
+  Type     Reason       Age                 From               Message
+  Warning  FailedMount  90s                 kubelet            MountVolume.MountDevice failed for volume "pvc-123": rpc error: code = Internal desc = failed to attach volume

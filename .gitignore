@@ -7,6 +7,9 @@
 *.dll
 *.so
 *.dylib
+kdescribe
+kubectl-kdescribe
+dist/
 
 # Test binary, built with `go test -c`
 *.test
@@ -24,9 +27,17 @@ profile.cov
 go.work
 go.work.sum
 
+# Local Kubernetes credentials
+kubeconfig
+
 # env file
 .env
 
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Kubernetes
+kubeconfig
+noisy-pod.yaml
+kdescribe

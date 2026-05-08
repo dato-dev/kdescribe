@@ -1,0 +1,20 @@
+Name:             worker-0
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           app=worker
+Status:           Pending
+Containers:
+  worker:
+    Image:      ghcr.io/example/worker:v1
+    State:      Waiting
+      Reason:   Pending
+    Ready:      False
+    Restart Count:  0
+Conditions:
+  Type           Status
+  PodScheduled   False
+Events:
+  Type     Reason             Age                 From               Message
+  Warning  FailedScheduling   30s                 default-scheduler  0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available.

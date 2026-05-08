@@ -1,0 +1,32 @@
+Name:             api-7f9f9d9c8b-2lq4m
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             worker-1/10.0.0.10
+Start Time:       Fri, 08 May 2026 12:00:00 +0000
+Labels:           app=api
+Status:           Running
+IP:               10.244.1.25
+IPs:
+  IP:           10.244.1.25
+Containers:
+  api:
+    Container ID:   containerd://abc123
+    Image:          ghcr.io/example/api:v1
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+    Ready:          False
+    Restart Count:  12
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             False
+  ContainersReady   False
+  PodScheduled      True
+Events:
+  Type     Reason     Age                   From     Message
+  Warning  BackOff    2m                    kubelet  Back-off restarting failed container api in pod api-7f9f9d9c8b-2lq4m_default
+  Warning  Unhealthy  1m                    kubelet  Readiness probe failed: Get "http://10.244.1.25:8080/health": dial tcp 10.244.1.25:8080: connect: connection refused

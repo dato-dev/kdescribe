@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kdescribe-chaos
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crashloop-and-probes
+  namespace: kdescribe-chaos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crashloop-and-probes
+  template:
+    metadata:
+      labels:
+        app: crashloop-and-probes
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.36
+          command: ["sh", "-c", "echo starting; sleep 2; echo boom; exit 1"]
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9999
+            initialDelaySeconds: 1
+            periodSeconds: 3
+            timeoutSeconds: 1
+            failureThreshold: 1
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "exit 1"]
+            initialDelaySeconds: 1
+            periodSeconds: 3
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bad-image-pull
+  namespace: kdescribe-chaos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bad-image-pull
+  template:
+    metadata:
+      labels:
+        app: bad-image-pull
+    spec:
+      imagePullSecrets:
+        - name: missing-registry-secret
+      containers:
+        - name: app
+          image: ghcr.io/example/definitely-missing-image:not-a-tag
+          imagePullPolicy: Always
+          command: ["sh", "-c", "sleep 3600"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unschedulable
+  namespace: kdescribe-chaos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unschedulable
+  template:
+    metadata:
+      labels:
+        app: unschedulable
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node-that-does-not-exist
+      containers:
+        - name: app
+          image: busybox:1.36
+          command: ["sh", "-c", "sleep 3600"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: missing-configmap-mount
+  namespace: kdescribe-chaos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: missing-configmap-mount
+  template:
+    metadata:
+      labels:
+        app: missing-configmap-mount
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.36
+          command: ["sh", "-c", "cat /etc/app/config.yaml; sleep 3600"]
+          volumeMounts:
+            - name: app-config
+              mountPath: /etc/app
+      volumes:
+        - name: app-config
+          configMap:
+            name: configmap-that-does-not-exist
+
