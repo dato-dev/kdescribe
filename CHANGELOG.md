@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/dato-dev/kdescribe/compare/v1.0.0...v1.1.0) (2026-05-09)
+
+### Features
+
+* added build binary and push to project ([568cd60](https://github.com/dato-dev/kdescribe/commit/568cd60c188b4ffa5b2f7a6bbcdf03c7d91cd488))
+
 ## 1.0.0 (2026-05-09)
 
 ### Features
