@@ -73,6 +73,10 @@ Build release artifacts with GoReleaser:
 goreleaser release --snapshot --clean
 ```
 
+On `main`, semantic-release creates the GitHub Release and then runs GoReleaser
+in GitHub Actions. GoReleaser uploads archives that contain the
+`kubectl-kdescribe` binary.
+
 The draft krew manifest lives in `krew/kdescribe.yaml`. Replace `sha256: TODO`
 values with checksums from the release before submitting to the krew index.
 

@@ -28,6 +28,12 @@
       }
     ],
     [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "goreleaser release --clean"
+      }
+    ],
+    [
       "@semantic-release/git",
       {
         "assets": ["CHANGELOG.md"],

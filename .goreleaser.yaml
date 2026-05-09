@@ -22,7 +22,7 @@ builds:
 
 archives:
   - id: kdescribe
-    builds:
+    ids:
       - kubectl-kdescribe
     name_template: >-
       {{ .ProjectName }}_
@@ -39,3 +39,5 @@ release:
   github:
     owner: dato-dev
     name: kdescribe
+  mode: append
+  replace_existing_artifacts: true
