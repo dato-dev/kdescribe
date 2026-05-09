@@ -40,6 +40,9 @@ jobs:
       - name: Run tests
         run: go test ./...
 
+      - name: Build release artifacts
+        run: goreleaser release --snapshot --clean --skip=publish
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -54,7 +57,6 @@ jobs:
           -p @semantic-release/changelog
           -p @semantic-release/git
           -p @semantic-release/github
-          -p @semantic-release/exec
           -p @semantic-release/commit-analyzer
           -p @semantic-release/release-notes-generator
           -p conventional-changelog-conventionalcommits

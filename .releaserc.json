@@ -24,13 +24,12 @@
       "@semantic-release/github",
       {
         "successComment": false,
-        "failComment": false
-      }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "publishCmd": "goreleaser release --clean"
+        "failComment": false,
+        "assets": [
+          "dist/*.tar.gz",
+          "dist/*.zip",
+          "dist/checksums.txt"
+        ]
       }
     ],
     [
