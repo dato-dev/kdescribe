@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/dato-dev/kdescribe/compare/v1.1.1...v1.2.0) (2026-05-09)
+
+### Features
+
+* added script to update krew ([52d1664](https://github.com/dato-dev/kdescribe/commit/52d1664b697e92a5ce2af8604f87913fa378160a))
+
 ## [1.1.1](https://github.com/dato-dev/kdescribe/compare/v1.1.0...v1.1.1) (2026-05-09)
 
 ### Bug Fixes
