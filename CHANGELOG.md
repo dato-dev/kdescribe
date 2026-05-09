@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/dato-dev/kdescribe/compare/v1.1.0...v1.1.1) (2026-05-09)
+
+### Bug Fixes
+
+* fixed build ([f01e8ea](https://github.com/dato-dev/kdescribe/commit/f01e8ea72a754426bef88f60239603b25b4e9087))
+
 ## [1.1.0](https://github.com/dato-dev/kdescribe/compare/v1.0.0...v1.1.0) (2026-05-09)
 
 ### Features
