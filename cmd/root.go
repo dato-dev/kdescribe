@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
+	"strconv"
 	"strings"
 
 	"github.com/dato-dev/kdescribe/internal/analyzer"
@@ -17,21 +19,29 @@ var options struct {
 	minScore int
 	exitCode bool
 	showAll  bool
+	help     bool
 }
 
 var rootCmd = &cobra.Command{
-	Use:           "kdescribe",
-	Short:         "Kubernetes describe highlighter",
-	SilenceUsage:  true,
-	SilenceErrors: true,
-	Example:       "  kubectl describe pod nginx | kdescribe\n  kubectl describe pod nginx | kdescribe --output json",
+	Use:                "kdescribe [resource] [name] [kubectl describe flags]",
+	Short:              "Kubernetes describe highlighter",
+	Args:               cobra.ArbitraryArgs,
+	DisableFlagParsing: true,
+	SilenceUsage:       true,
+	SilenceErrors:      true,
+	Example:            "  kubectl kdescribe pod nginx\n  kubectl kdescribe pod nginx -n default\n  kubectl describe pod nginx | kdescribe --output json",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if hasNoStdin() {
+		describeArgs, err := parseArgs(args)
+		if err != nil {
+			return err
+		}
+
+		if options.help {
 			_ = cmd.Help()
 			return nil
 		}
 
-		input, err := io.ReadAll(os.Stdin)
+		input, err := readInput(describeArgs)
 		if err != nil {
 			return err
 		}
@@ -84,4 +94,80 @@ func hasNoStdin() bool {
 	}
 
 	return stat.Mode()&os.ModeCharDevice != 0
+}
+
+func readInput(describeArgs []string) ([]byte, error) {
+	if len(describeArgs) > 0 {
+		args := append([]string{"describe"}, describeArgs...)
+		command := exec.Command("kubectl", args...)
+		command.Stderr = os.Stderr
+
+		return command.Output()
+	}
+
+	if hasNoStdin() {
+		return nil, nil
+	}
+
+	return io.ReadAll(os.Stdin)
+}
+
+func parseArgs(args []string) ([]string, error) {
+	describeArgs := make([]string, 0, len(args))
+
+	for index := 0; index < len(args); index++ {
+		arg := args[index]
+
+		switch {
+		case arg == "--":
+			describeArgs = append(describeArgs, args[index+1:]...)
+			return describeArgs, nil
+		case arg == "--help" || arg == "-h":
+			options.help = true
+		case arg == "--no-color":
+			options.noColor = true
+		case arg == "--exit-code":
+			options.exitCode = true
+		case arg == "--show-all":
+			options.showAll = true
+		case arg == "--output" || arg == "-o":
+			value, ok := nextValue(args, &index)
+			if !ok {
+				return nil, fmt.Errorf("%s requires a value", arg)
+			}
+			options.output = value
+		case strings.HasPrefix(arg, "--output="):
+			options.output = strings.TrimPrefix(arg, "--output=")
+		case arg == "--min-score":
+			value, ok := nextValue(args, &index)
+			if !ok {
+				return nil, fmt.Errorf("%s requires a value", arg)
+			}
+			minScore, err := strconv.Atoi(value)
+			if err != nil {
+				return nil, fmt.Errorf("invalid --min-score value %q", value)
+			}
+			options.minScore = minScore
+		case strings.HasPrefix(arg, "--min-score="):
+			value := strings.TrimPrefix(arg, "--min-score=")
+			minScore, err := strconv.Atoi(value)
+			if err != nil {
+				return nil, fmt.Errorf("invalid --min-score value %q", value)
+			}
+			options.minScore = minScore
+		default:
+			describeArgs = append(describeArgs, arg)
+		}
+	}
+
+	return describeArgs, nil
+}
+
+func nextValue(args []string, index *int) (string, bool) {
+	if *index+1 >= len(args) {
+		return "", false
+	}
+
+	*index = *index + 1
+	return args[*index], true
 }
